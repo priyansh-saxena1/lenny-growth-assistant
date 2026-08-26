@@ -34,6 +34,18 @@ import yaml
 # "Brian Chesky (00:14:32):" or a bare "(00:14:32):" continuation line.
 TURN_RE = re.compile(r"^(?P<speaker>[^\n(]{0,80}?)\s*\((?P<ts>\d{1,2}:\d{2}(?::\d{2})?)\):\s*$")
 
+# A handful of upstream files use "[00:14:32] Speaker: text" all on one line
+# instead of the two-line "Speaker (ts):" / body format above.
+BRACKET_TURN_RE = re.compile(
+    r"^\[(?P<ts>\d{1,2}:\d{2}(?::\d{2})?)\]\s*(?P<speaker>[^:\n]{0,80}?):\s*(?P<text>.*)$"
+)
+
+# A few files drop timestamps entirely: just "Speaker:" on its own line. We
+# can't recover real timecodes for these, so start/end_ts fall back to 00:00 —
+# citations lose the "jump to this second" precision but the episode is still
+# retrievable and grounded to the right guest.
+NO_TS_TURN_RE = re.compile(r"^(?P<speaker>[^\n(:]{0,80})\s*:\s*$")
+
 
 @dataclass
 class Turn:
@@ -85,6 +97,16 @@ def _front_matter(raw: str) -> tuple[dict, str]:
 
 
 def parse_turns(body: str) -> list[Turn]:
+    turns = _parse_turns_standard(body)
+    if turns:
+        return turns
+    turns = _parse_turns_bracket(body)
+    if turns:
+        return turns
+    return _parse_turns_no_timestamp(body)
+
+
+def _parse_turns_standard(body: str) -> list[Turn]:
     turns: list[Turn] = []
     cur_speaker = ""
     pending: Turn | None = None
@@ -106,6 +128,49 @@ def parse_turns(body: str) -> list[Turn]:
             if spk:
                 cur_speaker = spk
             pending = Turn(speaker=cur_speaker or "Unknown", ts=_norm_ts(m.group("ts")), text="")
+            continue
+        if pending is not None:
+            buf.append(line)
+    flush()
+    return turns
+
+
+def _parse_turns_bracket(body: str) -> list[Turn]:
+    turns: list[Turn] = []
+    for line in body.splitlines():
+        m = BRACKET_TURN_RE.match(line.strip())
+        if not m:
+            continue
+        text = m.group("text").strip()
+        if not text:
+            continue
+        ts = _norm_ts(m.group("ts"))
+        turns.append(Turn(speaker=m.group("speaker").strip() or "Unknown", ts=ts, text=text))
+    return turns
+
+
+def _parse_turns_no_timestamp(body: str) -> list[Turn]:
+    turns: list[Turn] = []
+    cur_speaker = ""
+    pending: Turn | None = None
+    buf: list[str] = []
+
+    def flush():
+        nonlocal pending, buf
+        if pending is not None:
+            pending.text = "\n".join(buf).strip()
+            if pending.text:
+                turns.append(pending)
+        pending, buf = None, []
+
+    for line in body.splitlines():
+        m = NO_TS_TURN_RE.match(line.strip())
+        if m:
+            flush()
+            spk = m.group("speaker").strip()
+            if spk:
+                cur_speaker = spk
+            pending = Turn(speaker=cur_speaker or "Unknown", ts="00:00", text="")
             continue
         if pending is not None:
             buf.append(line)
