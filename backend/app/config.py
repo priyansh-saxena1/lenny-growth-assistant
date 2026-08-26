@@ -4,7 +4,30 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+# A fixed parent-count (e.g. `parents[2]`) breaks the moment this file's depth
+# relative to the repo root changes between environments — which it does: the
+# Docker image flattens `backend/` into `/app` (config.py ends up two levels
+# down from WORKDIR), while a local clone or Colab keeps `backend/` nested
+# under the repo root (config.py ends up three levels down). Walk upward for
+# a marker that only exists at the real repo root instead of counting parents.
+_REPO_ROOT_MARKERS = ("Makefile", "docker-compose.yml", ".git")
+
+
+def _find_repo_root(start: Path) -> Path:
+    cur = start
+    while True:
+        if any((cur / marker).exists() for marker in _REPO_ROOT_MARKERS):
+            return cur
+        if cur.parent == cur:
+            break
+        cur = cur.parent
+    # No marker found (e.g. inside the Docker image, which only ships the
+    # backend/ subtree flattened into WORKDIR) — one level above app/ is the
+    # container's effective root.
+    return start.parent
+
+
+REPO_ROOT = _find_repo_root(Path(__file__).resolve().parent)
 
 
 class Settings(BaseSettings):
