@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# pytest
+.pytest_cache/
+
+# Environment
+.env
+
+# Data (generated, don't commit)
+data/transcripts/
+data/*.sqlite3
+
+# Docker
+pgdata/
+hfcache/
+ollama/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Local eval / index cache
+.cache/
+*.sqlite3
+local.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+.tmp/
+*.tar.gz

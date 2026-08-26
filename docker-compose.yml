@@ -1,0 +1,63 @@
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: lenny
+      POSTGRES_PASSWORD: lenny
+      POSTGRES_DB: lenny
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lenny -d lenny"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://lenny:lenny@db:5432/lenny
+      OLLAMA_HOST: http://ollama:11434
+      OMP_NUM_THREADS: "4"
+      ONNX_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "4"
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - hfcache:/root/.cache/huggingface
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE: http://localhost:8000
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
+volumes:
+  pgdata:
+  hfcache:
+  ollama:
