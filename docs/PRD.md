@@ -147,6 +147,23 @@ drops to 5 passages because small models cite better with less; the grounding
 gate catches what still slips. The honest statement is that answer quality on
 Claude is meaningfully better, and the toggle exists so you can see the gap.
 
+Measured on the full 303-episode corpus against `qwen2.5:7b-instruct` (GPU-run
+`eval/REPORT.md`): retrieval is exact — recall@8 100%, all 15 in-corpus goldens
+scored — but mean claim-support sits at 12%. Inspecting the worst-scoring claim
+per question shows why: the model fuses two or three source passages into one
+synthesized sentence (`"In [4], he discusses X, suggesting Y"`), which the
+grounding gate — matching each claim sentence to its single closest evidence
+sentence — correctly can't verify against either source alone. Tightening
+`ANSWER_SYSTEM` to ask for one claim per sentence, closely paraphrasing its
+citation, made no measurable difference; a quantized 7B model doesn't reliably
+follow that level of stylistic instruction turn to turn. This isn't a scoring
+bug — see `eval/REPORT.md`'s per-question table for the fusion pattern — it's
+the actual quality ceiling of the required local-CPU-friendly model size. Two
+real upgrade paths, both left for a follow-up: (1) chunk-level rather than
+sentence-level evidence matching, which would credit a fused claim against the
+union of its sources; (2) a model in the 8-14B range, which the 3B-recommended
+hardware doesn't support but the toggle to Claude demonstrates working.
+
 **Misattribution.** If an upstream transcript labels a speaker wrong, we cite it
 confidently. Speaker-turn chunking makes this *more* visible, not less. Not
 mitigated. Would need spot-checking against audio.
