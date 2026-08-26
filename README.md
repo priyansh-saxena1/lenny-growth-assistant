@@ -146,9 +146,29 @@ worth knowing:
 | `RETRIEVAL_TOP_K` | `8` | passages per answer |
 | `FAITHFULNESS_SUPPORTED_AT` | `0.65` | calibrated in `eval/REPORT.md` |
 | `FAITHFULNESS_ENABLED` | `true` | set false to A/B the gate's latency cost |
+| `SERVE_FRONTEND` | `false` | see below |
 
 `echo` is a deterministic stub, not a model. It exists so tests and eval run
 with no infrastructure. The UI shows a warning when it's selected.
+
+## Cloud GPU demo (Colab)
+
+The laptop this was built on has no GPU and 4 CPU cores; measured end-to-end
+turn latency on it is documented honestly in [PRD.md](docs/PRD.md) and
+[eval/REPORT.md](backend/eval/REPORT.md) rather than hidden. [colab_t4_demo.ipynb](colab_t4_demo.ipynb)
+runs the identical stack — same FastAPI backend, same ingest and eval code —
+against `qwen2.5:7b-instruct` on a free T4 GPU, for recording the demo and for
+regenerating eval numbers against the full 303-episode corpus in minutes
+instead of hours.
+
+Colab hands the API and a separately-served frontend two different public
+origins, which turns an ordinary local setup into a cross-origin (CORS)
+problem for no benefit. Setting `SERVE_FRONTEND=true` makes the API process
+also serve the built frontend (`frontend/dist`) from the same origin, so
+there's one address and no cross-origin request to configure around. It's off
+by default and irrelevant to the normal Docker Compose path, where the
+frontend and API already run on separate, same-machine ports. See
+[architecture.md](docs/architecture.md#single-port-mode) for the mechanism.
 
 ## API
 

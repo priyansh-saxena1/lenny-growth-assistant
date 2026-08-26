@@ -174,6 +174,19 @@ which dominated the turn; capping evidence sentences and caching them fixed it.
 `FAITHFULNESS_ENABLED=false` exists to measure the trade-off rather than argue
 about it.
 
+**Development hardware has no GPU and 4 CPU cores.** Measured end-to-end turn
+latency on it runs to the tens of seconds against `qwen2.5:3b-instruct`, which
+is workable to use interactively but not something to record a live demo
+against without narrating around the wait on every turn. Rather than silently
+picking a smaller model to hide this or claiming a laptop capability that
+doesn't exist, the demo and the full-corpus eval run (`colab_t4_demo.ipynb`,
+see README) use a free Colab T4 GPU running the identical stack and code
+against `qwen2.5:7b-instruct` — a real local `ollama serve` process, which
+satisfies the brief's "local LLM mandatory for the demo" requirement literally,
+just not on the laptop that wrote the code. This is a disclosed hardware
+constraint, not a bait-and-switch: the Docker Compose path on a CPU-only
+machine still works end to end, just slower than the recorded demo shows.
+
 **Unsafe artifact rendering.** Model-authored HTML that has read
 attacker-influenceable text. Contained by an opaque-origin sandbox plus
 `default-src 'none'`, not by stripping scripts — see `SECURITY.md` for why

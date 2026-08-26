@@ -80,6 +80,15 @@ class Settings(BaseSettings):
     log_json: bool = True
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
+    # Some environments (Colab is the case that forced this) hand every exposed
+    # port its own separate public origin — running the API and the Vite dev
+    # server as two ports then means every request is cross-origin, which is a
+    # CORS problem for no real benefit. Off by default; when true, the API
+    # process also serves the built frontend from the same origin so there is
+    # no second address and no cross-origin request to configure around.
+    serve_frontend: bool = False
+    frontend_dist: Path = REPO_ROOT / "frontend" / "dist"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

@@ -130,7 +130,15 @@ for r in (health.router, sessions.router, chat.router, artifacts.router, admin.r
     app.include_router(r)
 
 
-@app.get("/")
-async def root():
-    return {"service": "lenny-growth-assistant", "docs": "/docs",
-            "health": "/api/health"}
+# Registered after every /api/* route so the API always matches first — the
+# static mount only ever catches what's left over. See Settings.serve_frontend.
+if settings.serve_frontend and settings.frontend_dist.is_dir():
+    from starlette.staticfiles import StaticFiles
+
+    app.mount("/", StaticFiles(directory=settings.frontend_dist, html=True), name="frontend")
+    log.info("startup.serving_frontend", dist=str(settings.frontend_dist))
+else:
+    @app.get("/")
+    async def root():
+        return {"service": "lenny-growth-assistant", "docs": "/docs",
+                "health": "/api/health"}

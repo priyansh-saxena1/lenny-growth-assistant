@@ -231,3 +231,19 @@ each provider so a failure names itself.
 The debugging entry point is `python -m app.cli ask "question"` — retrieval only,
 no model. It answers "is the model wrong or is retrieval wrong?" in one command,
 which is the first question in almost every RAG bug report.
+
+## Single-port mode
+
+Some environments — Colab is the one that forced this — give every exposed
+port its own separate public origin. Running the API on one origin and the
+Vite dev server on another then makes every request cross-origin, which is a
+CORS problem to configure around for no actual benefit; the two servers are
+one deployment, not two.
+
+`SERVE_FRONTEND=true` (`backend/app/config.py`) makes the FastAPI process
+serve the built frontend (`frontend/dist`, default) as static files from `/`,
+mounted in `main.py` after every `/api/*` route so the API always matches
+first — the static mount only ever catches what a route didn't. One origin,
+one process, no cross-origin request exists to fail. Off by default: the
+normal Docker Compose path runs the frontend and API as separate containers on
+separate same-machine ports, where this doesn't apply and isn't needed.
