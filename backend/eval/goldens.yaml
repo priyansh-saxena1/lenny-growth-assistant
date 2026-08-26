@@ -1,0 +1,122 @@
+# Golden set for `make eval`.
+#
+# 20 questions. 15 should be answerable from the archive, 5 deliberately are not
+# — refusal correctness matters as much as answer quality, because an assistant
+# that confidently answers off-corpus questions is worse than no assistant.
+#
+# `expect_guest` / `expect_terms` define a retrieval hit. A question counts as
+# recalled if any retrieved chunk matches the guest, or if the union of
+# retrieved text contains at least `min_terms` of the expected terms. Guest
+# matching is the stronger signal; terms exist for questions several guests
+# cover.
+#
+# The harness reports how many goldens are actually in the current index and
+# scores only those, so a partial ingest produces an honest number rather than
+# a deflated one.
+
+in_corpus:
+  - id: g01
+    q: "What is founder mode and what does Brian Chesky actually do differently?"
+    expect_guest: "Brian Chesky"
+    expect_terms: [founder, chesky, airbnb, detail]
+    min_terms: 2
+
+  - id: g02
+    q: "How do you know if you have product-market fit?"
+    expect_terms: [retention, product market fit, pmf, curve, signal]
+    min_terms: 2
+
+  - id: g03
+    q: "What is the 11-star experience exercise?"
+    expect_guest: "Brian Chesky"
+    expect_terms: [star, experience, extreme]
+    min_terms: 1
+
+  - id: g04
+    q: "How are growth loops different from funnels?"
+    expect_terms: [loop, funnel, compound, growth]
+    min_terms: 2
+
+  - id: g05
+    q: "What should a new product manager focus on in their first 90 days?"
+    expect_terms: [first, days, new, manager, onboarding, trust]
+    min_terms: 2
+
+  - id: g06
+    q: "How should I run effective user interviews?"
+    expect_terms: [interview, customer, question, research, ask]
+    min_terms: 2
+
+  - id: g07
+    q: "What makes a good product strategy versus a bad one?"
+    expect_terms: [strategy, bet, choice, focus, tradeoff]
+    min_terms: 2
+
+  - id: g08
+    q: "How do you hire your first product managers?"
+    expect_terms: [hire, hiring, candidate, interview, first]
+    min_terms: 2
+
+  - id: g09
+    q: "What pricing advice comes up for early-stage SaaS?"
+    expect_terms: [pricing, price, willingness, charge, value]
+    min_terms: 2
+
+  - id: g10
+    q: "How do you improve user retention?"
+    expect_terms: [retention, churn, habit, engagement, cohort]
+    min_terms: 2
+
+  - id: g11
+    q: "What is the advice on saying no to stakeholders and prioritising?"
+    expect_terms: [prioriti, "no", stakeholder, roadmap, focus]
+    min_terms: 2
+
+  - id: g12
+    q: "How do you build a growth team from scratch?"
+    expect_terms: [growth, team, experiment, hire, structure]
+    min_terms: 2
+
+  - id: g13
+    q: "What do guests say about A/B testing and experimentation velocity?"
+    expect_terms: [experiment, test, velocity, ship, learn]
+    min_terms: 2
+
+  - id: g14
+    q: "How should PMs work with engineers and designers?"
+    expect_terms: [engineer, design, team, collaborat, trust]
+    min_terms: 2
+
+  - id: g15
+    q: "What advice is there on career growth and getting promoted in product?"
+    expect_terms: [career, promot, growth, senior, manager]
+    min_terms: 2
+
+# Nothing in Lenny's Podcast covers these. The correct behaviour is to say so.
+out_of_corpus:
+  - id: x01
+    q: "What is the recommended dosage of amoxicillin for a chest infection?"
+  - id: x02
+    q: "Who won the 2026 Formula 1 constructors championship?"
+  - id: x03
+    q: "Write me a Terraform module for an AWS Aurora cluster with failover."
+  - id: x04
+    q: "What is the boiling point of liquid nitrogen at 2 atmospheres?"
+  - id: x05
+    q: "Summarise the plot of Wuthering Heights chapter by chapter."
+
+# Phrases that indicate the assistant correctly declined rather than confabulated.
+refusal_markers:
+  - "don't have"
+  - "do not have"
+  - "doesn't cover"
+  - "does not cover"
+  - "not covered"
+  - "no transcript"
+  - "isn't covered"
+  - "outside"
+  - "archive"
+  - "can't find"
+  - "cannot find"
+  - "nothing in the"
+  - "not something"

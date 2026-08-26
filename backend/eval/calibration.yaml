@@ -1,0 +1,72 @@
+# Calibration set for the faithfulness gate.
+#
+# Hand-labelled claim/evidence pairs. The harness sweeps the supported/partial
+# thresholds across these and prints the confusion matrix, so the numbers in
+# config.py are traceable to something rather than picked by feel.
+#
+# `label: supported` means a human reading the evidence would accept the claim.
+# `label: unsupported` means the claim adds something the evidence does not say —
+# an invented number, a wrong attribution, or a conclusion the evidence
+# doesn't reach. These are the cases that matter: a gate that only catches
+# obvious topic drift is not worth shipping.
+
+pairs:
+  - label: supported
+    claim: "Chesky cut the number of active projects dramatically and reviews the survivors himself."
+    evidence: "Brian Chesky: I review every detail of the product every week. We cut 200 projects down to 20 and I personally sign off on each one."
+
+  - label: supported
+    claim: "Flat retention curves are treated as the clearest product-market fit signal."
+    evidence: "Ravi Mehta: Retention curves that flatten are the clearest product market fit signal. If week 8 retention is flat you have something real."
+
+  - label: supported
+    claim: "Growth loops get cheaper over time because each output feeds the next input."
+    evidence: "Casey Winters: Growth loops compound where funnels leak. Every output of the loop feeds the next input, so the channel gets cheaper over time."
+
+  - label: supported
+    claim: "The 11-star exercise is deliberately absurd to push teams past incremental thinking."
+    evidence: "Brian Chesky: The 11 star experience exercise forces you past incremental thinking. A 5 star checkin is fine. An 11 star checkin is absurd on purpose."
+
+  - label: supported
+    claim: "He signs off on each remaining project personally."
+    evidence: "Brian Chesky: We cut 200 projects down to 20 and I personally sign off on each one."
+
+  - label: supported
+    claim: "Week 8 is named as the retention checkpoint."
+    evidence: "Ravi Mehta: If week 8 retention is flat you have something real."
+
+  # --- the failures the gate exists to catch ------------------------------
+
+  - label: unsupported
+    claim: "Airbnb grew revenue 47% in the year after adopting founder mode."
+    evidence: "Brian Chesky: I review every detail of the product every week. We cut 200 projects down to 20 and I personally sign off on each one."
+
+  - label: unsupported
+    claim: "Chesky says founder mode means firing your middle managers."
+    evidence: "Brian Chesky: I review every detail of the product every week. We cut 200 projects down to 20 and I personally sign off on each one."
+
+  - label: unsupported
+    claim: "Casey Winters recommends spending at least 30% of budget on paid acquisition."
+    evidence: "Casey Winters: Growth loops compound where funnels leak. Every output of the loop feeds the next input, so the channel gets cheaper over time."
+
+  - label: unsupported
+    claim: "Ravi Mehta argues that week 8 retention above 40% guarantees product-market fit."
+    evidence: "Ravi Mehta: Retention curves that flatten are the clearest product market fit signal. If week 8 retention is flat you have something real."
+
+  - label: unsupported
+    claim: "Slack started life as a gaming company called Tiny Speck."
+    evidence: "Brian Chesky: The 11 star experience exercise forces you past incremental thinking."
+
+  - label: unsupported
+    claim: "The 11-star exercise was invented by Paul Graham at Y Combinator."
+    evidence: "Brian Chesky: The 11 star experience exercise forces you past incremental thinking. A 5 star checkin is fine."
+
+  # Topically adjacent but asserting something the evidence doesn't — the
+  # hardest class, and where a cosine-only check fails.
+  - label: unsupported
+    claim: "Retention curves that decline steadily still indicate product-market fit."
+    evidence: "Ravi Mehta: Retention curves that flatten are the clearest product market fit signal."
+
+  - label: unsupported
+    claim: "Funnels compound better than loops for most consumer products."
+    evidence: "Casey Winters: Growth loops compound where funnels leak."
