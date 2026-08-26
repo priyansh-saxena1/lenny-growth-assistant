@@ -60,29 +60,33 @@ def hit_matches(g: dict, hits) -> bool:
     return sum(1 for t in terms if t in blob) >= g.get("min_terms", 2)
 
 
-def in_index(g: dict, store) -> bool:
+def in_index(g: dict, corpus) -> bool:
     """Is this golden even answerable from the current index?
 
     Guest-anchored goldens need that guest present. Term-anchored ones need the
     terms to appear somewhere in the corpus. Anything else is scored as
     out-of-scope rather than as a miss.
+
+    `corpus` is every chunk currently indexed (`store.all_chunks()`), not the
+    store itself — checking `store.chunks` directly only worked for the
+    in-memory backend and silently marked everything "not in index" against
+    pgvector, which has no such attribute.
     """
-    texts = getattr(store, "chunks", {})
     if g.get("expect_guest"):
-        return any(g["expect_guest"].lower() in c.guest.lower() for c in texts.values())
+        return any(g["expect_guest"].lower() in c.guest.lower() for c in corpus)
     terms = [t.lower() for t in g.get("expect_terms", [])]
-    blob = " ".join(c.text.lower() for c in texts.values())
+    blob = " ".join(c.text.lower() for c in corpus)
     return sum(1 for t in terms if t in blob) >= g.get("min_terms", 2)
 
 
-async def run_retrieval(goldens: dict, store, k: int) -> dict:
+async def run_retrieval(goldens: dict, corpus, k: int) -> dict:
     from app.rag.retriever import retrieve
 
     rows, lat = [], []
     scored = skipped = recalled = 0
 
     for g in goldens["in_corpus"]:
-        if not in_index(g, store):
+        if not in_index(g, corpus):
             rows.append({"id": g["id"], "status": "not_in_index", "recall": None, "ms": None})
             skipped += 1
             continue
@@ -161,7 +165,7 @@ def run_calibration(cal: dict, chosen: float) -> dict:
 # end-to-end (needs a real model)
 # --------------------------------------------------------------------------
 
-async def run_answers(goldens: dict, provider_name: str, store, k: int) -> dict:
+async def run_answers(goldens: dict, provider_name: str, corpus, k: int) -> dict:
     from app.agent.tools import format_sources
     from app.grounding.faithfulness import check
     from app.llm.registry import get_provider
@@ -173,7 +177,7 @@ async def run_answers(goldens: dict, provider_name: str, store, k: int) -> dict:
     rows, lat, ground = [], [], []
 
     for g in goldens["in_corpus"]:
-        if not in_index(g, store):
+        if not in_index(g, corpus):
             continue
         t0 = time.perf_counter()
         res = await retrieve(g["q"], k=k)
@@ -365,14 +369,15 @@ async def main() -> None:
     if n_chunks == 0:
         print("index is empty — run `make ingest` first", file=sys.stderr)
         raise SystemExit(2)
-    docs = len({c.document_id for c in getattr(store, "chunks", {}).values()})
+    corpus = await store.all_chunks()
+    docs = len({c.document_id for c in corpus})
 
     goldens = load("goldens.yaml")
     cal = load("calibration.yaml")
 
     print(f"index: {docs} episodes / {n_chunks} chunks")
     print("running retrieval…")
-    retrieval = await run_retrieval(goldens, store, k)
+    retrieval = await run_retrieval(goldens, corpus, k)
     print(f"  recall@{k} = {_pct(retrieval['recall_at_k'])} "
           f"({retrieval['scored']} scored, {retrieval['skipped']} skipped)")
 
@@ -383,7 +388,7 @@ async def main() -> None:
     answers = None
     if args.provider:
         print(f"generating answers via {args.provider} (this is the slow part)…")
-        answers = await run_answers(goldens, args.provider, store, k)
+        answers = await run_answers(goldens, args.provider, corpus, k)
         print(f"  claim-support = {_pct(answers['mean_grounding'])}, "
               f"refusals = {_pct(answers['refusal_rate'])}")
 

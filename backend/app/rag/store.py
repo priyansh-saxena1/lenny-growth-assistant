@@ -53,6 +53,12 @@ class VectorStore(Protocol):
     async def count(self) -> int: ...
     async def get(self, chunk_id: str) -> StoredChunk | None: ...
     async def neighbours(self, chunk_id: str, radius: int) -> list[StoredChunk]: ...
+    async def all_chunks(self) -> list[StoredChunk]:
+        """Every stored chunk. Only the eval harness calls this — it needs the
+        full corpus text to check which golden questions are answerable from
+        the current index, and doing that with per-question retrieval calls
+        would be both slower and a worse test (it'd measure retrieval twice)."""
+        ...
 
 
 class MemoryStore:
@@ -137,6 +143,9 @@ class MemoryStore:
 
     async def count(self):
         return len(self.chunks)
+
+    async def all_chunks(self):
+        return list(self.chunks.values())
 
     async def get(self, chunk_id):
         return self.chunks.get(chunk_id)

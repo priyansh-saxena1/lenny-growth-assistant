@@ -155,6 +155,14 @@ class PgVectorStore:
             r = await s.execute(text("SELECT count(*) FROM chunk_vectors"))
             return int(r.scalar_one())
 
+    async def all_chunks(self):
+        async with sessionmaker()() as s:
+            r = await s.execute(text(
+                "SELECT chunk_id, document_id, ordinal, text, speakers, "
+                "start_ts, end_ts, guest, title, youtube_url FROM chunk_vectors"
+            ))
+            return [_to_stored(row) for row in r.mappings()]
+
     async def get(self, chunk_id):
         async with sessionmaker()() as s:
             r = await s.execute(
