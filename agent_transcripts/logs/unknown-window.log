@@ -1,0 +1,12 @@
+2026-08-22 20:33:12 [error] Setting the document's base URI to 'https://claude.ai/' violates the following Content Security Policy directive: "base-uri 'none'". The action has been blocked.
+2026-08-22 20:33:12 [error] Uncaught (in promise) Error: Error invoking remote method '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState': Error: No handler registered for '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState'
+2026-08-22 21:09:48 [error] Setting the document's base URI to 'https://claude.ai/' violates the following Content Security Policy directive: "base-uri 'none'". The action has been blocked.
+2026-08-22 21:09:48 [error] Uncaught (in promise) Error: Error invoking remote method '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState': Error: No handler registered for '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState'
+2026-08-26 19:25:38 [error] Setting the document's base URI to 'https://claude.ai/' violates the following Content Security Policy directive: "base-uri 'none'". The action has been blocked.
+2026-08-26 19:25:39 [error] Uncaught (in promise) Error: Error invoking remote method '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState': Error: No handler registered for '$eipc_message$_d389d23d-9a52-4156-9f58-1baaf66d444d_$_claude.buddy_$_BuddyBleTransport_$_reportState'
+2026-08-26 20:15:40 [error] Setting the document's base URI to 'https://claude.ai/' violates the following Content Security Policy directive: "base-uri 'none'". The action has been blocked.
+2026-08-26 20:15:40 [error] Uncaught (in promise) Error: Error invoking remote method '$eipc_message$_34765cb4-112e-4342-8a58-3ce9c90c3b5b_$_claude.buddy_$_BuddyBleTransport_$_reportState': Error: No handler registered for '$eipc_message$_34765cb4-112e-4342-8a58-3ce9c90c3b5b_$_claude.buddy_$_BuddyBleTransport_$_reportState'
+2026-08-26 20:24:10 [warn] [Meta Pixel] - Duplicate Pixel ID: 1921933375117245.
+2026-08-26 20:24:24 [error] Electron sandboxed_renderer.bundle.js script failed to run
+2026-08-26 20:24:24 [error] TypeError: Cannot destructure property 'preloadScripts' of 'binding.startupData' as it is null.
+2026-08-26 20:24:38 [error] Provider's accounts list is empty.

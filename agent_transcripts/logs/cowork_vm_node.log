@@ -1,0 +1,57 @@
+2026-08-22 20:33:01 [info] [VM] Loading vmClient (TypeScript) module...
+2026-08-22 20:33:01 [info] [VM] Module loaded successfully
+2026-08-22 20:33:04 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:04 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:04 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:04 [info] [setYukonSilverConfig] Stale bundle present; refreshing in background
+2026-08-22 20:33:04 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [Bundle:status] vmlinuz version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [Bundle:status] initrd version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [Bundle:status] rootfs.vhdx version mismatch: have=<blob>, want=<blob>
+2026-08-22 20:33:05 [info] [downloadVM] Deleting old rootfs.vhdx to free disk space
+2026-08-22 20:33:05 [info] [downloadVM] Dropping stale rootfs.vhdx cache (6d1538ba6fec)
+2026-08-22 20:33:06 [info] [warm] No warm file found for rootfs.vhdx at current version
+2026-08-22 20:33:06 [info] [cache] No cached compressed file for rootfs.vhdx
+2026-08-22 20:33:06 [info] rootfs.vhdx version mismatch, upgrading...
+2026-08-22 21:09:37 [info] [VM] Loading vmClient (TypeScript) module...
+2026-08-22 21:09:37 [info] [VM] Module loaded successfully
+2026-08-22 21:09:37 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:37 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:37 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:37 [info] [Bundle:status] vmlinuz version mismatch: have=<blob>, want=<blob>
+2026-08-22 21:09:37 [info] [setYukonSilverConfig] Stale bundle present; refreshing in background
+2026-08-22 21:09:37 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:39 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:39 [info] [Bundle:status] vmlinuz version mismatch: have=<blob>, want=<blob>
+2026-08-22 21:09:39 [info] [Bundle:status] initrd version mismatch: have=<blob>, want=<blob>
+2026-08-22 21:09:40 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:40 [info] [Bundle:status] rootfs.vhdx missing
+2026-08-22 21:09:40 [info] [downloadVM] Dropping stale rootfs.vhdx cache (no origin)
+2026-08-22 21:09:40 [info] [warm] No warm file found for rootfs.vhdx at current version
+2026-08-22 21:09:40 [info] [cache] No cached compressed file for rootfs.vhdx
+2026-08-22 21:09:40 [info] rootfs.vhdx not found, downloading...
+2026-08-22 21:14:38 [info] [cache] Decompressing rootfs.vhdx from cached <home>\AppData\Roaming\Claude\vm_bundles\claudevm.bundle\rootfs.vhdx.zst
+2026-08-22 21:17:47 [info] [cache] rootfs.vhdx checksum validated
+2026-08-22 21:17:48 [info] [cache] rootfs.vhdx decompression from cache completed in 190106ms
+2026-08-22 21:17:48 [info] [Bundle:status] vmlinuz version mismatch: have=<blob>, want=<blob>
+2026-08-22 21:17:48 [info] [downloadVM] Deleting old vmlinuz to free disk space
+2026-08-22 21:17:48 [info] [downloadVM] Dropping stale vmlinuz cache (6d1538ba6fec)
+2026-08-22 21:17:48 [info] [warm] No warm file found for vmlinuz at current version
+2026-08-22 21:17:48 [info] [cache] No cached compressed file for vmlinuz
+2026-08-22 21:17:48 [info] vmlinuz version mismatch, upgrading...
+2026-08-22 21:17:52 [info] [Bundle:status] initrd version mismatch: have=<blob>, want=<blob>
+2026-08-22 21:17:52 [info] [downloadVM] Deleting old initrd to free disk space
+2026-08-22 21:17:53 [info] [downloadVM] Dropping stale initrd cache (6d1538ba6fec)
+2026-08-22 21:17:53 [info] [warm] No warm file found for initrd at current version
+2026-08-22 21:17:53 [info] [cache] No cached compressed file for initrd
+2026-08-22 21:17:53 [info] initrd version mismatch, upgrading...
+2026-08-22 21:17:58 [info] All files ready in <home>\AppData\Roaming\Claude\vm_bundles\claudevm.bundle
+2026-08-26 19:25:30 [info] [VM] Loading vmClient (TypeScript) module...
+2026-08-26 19:25:30 [info] [VM] Module loaded successfully
+2026-08-26 19:26:56 [info] [warm] Fetching VM hash for version 1.37937.1
+2026-08-26 19:26:56 [info] [warm] VM hash for version 1.37937.1: <blob>
+2026-08-26 19:26:56 [info] [warm] VM SHA matches current version, skipping
+2026-08-26 20:15:29 [info] [VM] Loading vmClient (TypeScript) module...
+2026-08-26 20:15:29 [info] [VM] Module loaded successfully
