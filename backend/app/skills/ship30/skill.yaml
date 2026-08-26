@@ -1,0 +1,90 @@
+name: ship30_essay
+version: 3
+# Derived from the Ship 30 for 30 guide linked in the brief. Encoded as data,
+# not prose, so the scorer below can actually measure conformance and so a
+# non-engineer on the client side can tune the house style without touching
+# Python. Bump `version` on any change — it's written into every essay's trace.
+
+source: https://www.ship30for30.com/atomic-essays
+
+principles:
+  - id: hook
+    label: Hook in the first two lines
+    guidance: >
+      Open with a specific, concrete claim, a contrarian statement, or a number.
+      Never open with "In today's world", a definition, or a question the reader
+      didn't ask. The first line should make the second line unavoidable.
+  - id: one_idea
+    label: One idea per essay
+    guidance: >
+      An atomic essay defends exactly one claim. If two claims are fighting,
+      cut the weaker one rather than covering both shallowly.
+  - id: skimmable
+    label: Built for the scroll
+    guidance: >
+      Short paragraphs (1-3 sentences). Subheads every ~200 words. Bullets for
+      any list of three or more. Bold the sentence a skimmer must not miss —
+      sparingly, so it keeps meaning something.
+  - id: specificity
+    label: Specifics over adjectives
+    guidance: >
+      Name the company, the number, the guest. "Airbnb's 11-star exercise"
+      beats "a well-known framework". Every general claim earns one concrete example.
+  - id: takeaway
+    label: One usable takeaway
+    guidance: >
+      Close with something the reader can do on Monday, stated as an action,
+      not a summary of what they just read.
+  - id: grounded
+    label: Grounded in the archive
+    guidance: >
+      Every factual claim traces to a retrieved transcript passage and carries
+      its [n] marker. If the archive doesn't support a point, cut the point.
+
+rubric:
+  # Each dimension scores 0-1. `weight` sets its share of the total.
+  # `floor` is the score below which a revision pass is triggered for it.
+  word_count:
+    weight: 0.15
+    floor: 0.7
+    target: 1250
+    tolerance: 0.20          # ±20% is a pass; scores taper outside it
+  hook:
+    weight: 0.20
+    floor: 0.6
+    banned_openers:
+      - "in today's"
+      - "in the world of"
+      - "have you ever"
+      - "we all know"
+      - "it is no secret"
+      - "in this essay"
+      - "as a product manager"
+    reward_signals: [number_in_first_2_sentences, quote_in_first_2_sentences, contrarian_marker]
+    contrarian_markers: ["most", "everyone", "conventional", "myth", "wrong", "actually", "nobody", "stop"]
+  skimmable:
+    weight: 0.20
+    floor: 0.6
+    min_headings: 3
+    max_words_per_heading: 320
+    min_bullet_lines: 4
+    bold_density_range: [0.004, 0.045]   # bolded words / total words
+    max_mean_paragraph_words: 75
+  specificity:
+    weight: 0.15
+    floor: 0.5
+    min_proper_nouns_per_100w: 1.2
+    min_numbers: 4
+  takeaway:
+    weight: 0.10
+    floor: 0.5
+    required_section_markers: ["takeaway", "what to do", "try this", "start here", "monday"]
+  grounded:
+    weight: 0.20
+    floor: 0.7
+    min_distinct_citations: 3
+    min_cited_paragraph_ratio: 0.35      # body paragraphs carrying a [n]
+
+revision:
+  max_passes: 1        # one targeted pass; a second rarely moved the score >2pts
+  min_total_to_skip: 0.85
