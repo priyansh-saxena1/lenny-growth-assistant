@@ -192,8 +192,16 @@ async def run_answers(goldens: dict, provider_name: str, corpus, k: int) -> dict
         ms = int((time.perf_counter() - t0) * 1000)
         lat.append(ms)
         ground.append(rep.score)
-        rows.append({"id": g["id"], "grounding": rep.score, "claims": rep.total_claims,
-                     "unsupported": rep.unsupported, "ms": ms})
+        # Worst-scoring claim gets carried into the report — enough context to
+        # tell "the model paraphrased poorly" from "the answer wasn't citing
+        # the passages at all" without re-running the eval to find out.
+        worst = min(rep.sentences, key=lambda s: s.score, default=None)
+        rows.append({
+            "id": g["id"], "grounding": rep.score, "claims": rep.total_claims,
+            "unsupported": rep.unsupported, "ms": ms,
+            "worst_claim": (worst.text[:140] if worst else None),
+            "worst_score": (worst.score if worst else None),
+        })
 
     markers = [m.lower() for m in goldens["refusal_markers"]]
     refused = 0
@@ -313,6 +321,18 @@ def write_report(ctx: dict) -> Path:
         a(f"| correct refusals (out-of-corpus) | **{_pct(ans['refusal_rate'])}** ({len(ans['refusal_rows'])} questions) |")
         a(f"| end-to-end p50 | {ans['p50_ms']} ms |")
         a(f"| end-to-end p95 | {ans['p95_ms']} ms |")
+        a("")
+        a("<details><summary>Per-question grounding</summary>")
+        a("")
+        a("| id | score | claims | unsupported | ms | worst-scoring claim |")
+        a("|---|---|---|---|---|---|")
+        for row in ans["rows"]:
+            worst = (row["worst_claim"] or "—").replace("|", "\\|")
+            wscore = "—" if row["worst_score"] is None else row["worst_score"]
+            a(f"| {row['id']} | {_pct(row['grounding'])} | {row['claims']} | "
+              f"{row['unsupported']} | {row['ms']} | ({wscore}) {worst} |")
+        a("")
+        a("</details>")
         a("")
         a("<details><summary>Refusal behaviour</summary>")
         a("")

@@ -120,3 +120,12 @@ refusal_markers:
   - "cannot find"
   - "nothing in the"
   - "not something"
+  # qwen2.5:7b-instruct's phrasing wasn't represented above — it consistently
+  # says "the transcript passages do not contain any information about X"
+  # rather than "don't have" / "doesn't cover".
+  - "don't contain"
+  - "do not contain"
+  - "doesn't contain"
+  - "does not contain"
+  - "no information"
+  - "not contain any information"
